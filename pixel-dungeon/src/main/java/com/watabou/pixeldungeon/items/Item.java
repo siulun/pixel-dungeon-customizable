@@ -25,6 +25,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.SnipersMark;
@@ -286,32 +287,33 @@ public class Item implements Bundlable {
 	}
 	
 	public void use() {
-		if (level > 0) {
-			int threshold = (int)(maxDurability() * DURABILITY_WARNING_LEVEL);
-			if (durability-- >= threshold && threshold > durability) {
-				GLog.w( TXT_GONNA_DEGRADE, name() );
-			}
-			if (durability <= 0) {
-				degrade();
-				if (levelKnown) {
-					GLog.n( TXT_DEGRADED, name() );
-					Dungeon.hero.interrupt();
-					
-					CharSprite sprite = Dungeon.hero.sprite;
-					PointF point = sprite.center().offset( 0, -16 );
-					if (this instanceof Weapon) {
-						sprite.parent.add( Degradation.weapon( point ) );
-					} else if (this instanceof Armor) {
-						sprite.parent.add( Degradation.armor( point ) );
-					} else if (this instanceof Ring) {
-						sprite.parent.add( Degradation.ring( point ) );
-					} else if (this instanceof Wand) {
-						sprite.parent.add( Degradation.wand( point ) );
-					}
-					Sample.INSTANCE.play( Assets.SND_DEGRADE );
-				}
-			}
-		}
+        if (PixelDungeon.degrade())
+            if (level > 0) {
+                int threshold = (int)(maxDurability() * DURABILITY_WARNING_LEVEL);
+                if (durability-- >= threshold && threshold > durability) {
+                    GLog.w( TXT_GONNA_DEGRADE, name() );
+                }
+                if (durability <= 0) {
+                    degrade();
+                    if (levelKnown) {
+                        GLog.n( TXT_DEGRADED, name() );
+                        Dungeon.hero.interrupt();
+
+                        CharSprite sprite = Dungeon.hero.sprite;
+                        PointF point = sprite.center().offset( 0, -16 );
+                        if (this instanceof Weapon) {
+                            sprite.parent.add( Degradation.weapon( point ) );
+                        } else if (this instanceof Armor) {
+                            sprite.parent.add( Degradation.armor( point ) );
+                        } else if (this instanceof Ring) {
+                            sprite.parent.add( Degradation.ring( point ) );
+                        } else if (this instanceof Wand) {
+                            sprite.parent.add( Degradation.wand( point ) );
+                        }
+                        Sample.INSTANCE.play( Assets.SND_DEGRADE );
+                    }
+                }
+            }
 	}
 	
 	public void fix() {

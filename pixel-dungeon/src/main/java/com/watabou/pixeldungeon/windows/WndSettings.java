@@ -33,6 +33,7 @@ public class WndSettings extends Window {
 	private static final String TXT_ZOOM_OUT		= "-";
 	private static final String TXT_ZOOM_DEFAULT	= "Default Zoom";
 
+    private static final String TXT_DEGRADE		= "Item degrade";
 	private static final String TXT_SCALE_UP		= "Scale up UI";
 	private static final String TXT_IMMERSIVE		= "Immersive mode";
 	
@@ -88,7 +89,18 @@ public class WndSettings extends Window {
 			updateEnabled();
 			
 		} else {
-			
+
+            CheckBox btnDegrade = new CheckBox( TXT_DEGRADE ) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    PixelDungeon.degrade(checked());
+                }
+            };
+            btnDegrade.setRect( 0, 0, WIDTH, BTN_HEIGHT );
+            btnDegrade.checked( PixelDungeon.degrade() );
+            add( btnDegrade );
+
 			CheckBox btnScaleUp = new CheckBox( TXT_SCALE_UP ) {
 				@Override
 				protected void onClick() {
@@ -96,7 +108,7 @@ public class WndSettings extends Window {
 					PixelDungeon.scaleUp( checked() );
 				}
 			};
-			btnScaleUp.setRect( 0, 0, WIDTH, BTN_HEIGHT );
+            btnScaleUp.setRect( 0, btnDegrade.bottom() + GAP, WIDTH, BTN_HEIGHT );
 			btnScaleUp.checked( PixelDungeon.scaleUp() );
 			add( btnScaleUp );
 			
